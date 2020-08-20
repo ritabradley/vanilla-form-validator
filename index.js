@@ -9,6 +9,28 @@ const isValidEmail = (email) => {
     return re.test(String(email).toLowerCase());
 };
 
+const checkRequired = (inputArray) => {
+    inputArray.forEach((input) => {
+        if (input.value.trim() === '') {
+            showError(input, `${getFieldName(input)} is required`);
+        } else {
+            showSuccess(input);
+        }
+    });
+};
+
+const checkLength = (input, min, max) => {
+    if (input.value.length < min) {
+        showError(input, `${getFieldName(input)} must be at least ${min} characters`);
+    } else if (input.value.length > max) {
+        showError(input, `${getFieldName(input)} must be less than ${max} characters`);
+    }
+};
+
+const getFieldName = (input) => {
+    return input.id.charAt(0).toUpperCase() + input.id.slice(1);
+};
+
 const showError = (input, message) => {
     const formControl = input.parentElement;
     const small = formControl.querySelector('small');
@@ -23,18 +45,7 @@ const showSuccess = (input) => {
 
 form.addEventListener('submit', (e) => {
     e.preventDefault();
-
-    if (username.value === '') {
-        showError(username, 'Username is required');
-    } else {
-        showSuccess(username);
-    }
-
-    if (email.value === '') {
-        showError(email, 'Email is required');
-    } else if (!isValidEmail(email.value)) {
-        showError(email, 'Please enter a valid email address');
-    } else {
-        showSuccess(email);
-    }
+    checkRequired([username, email, password, password2]);
+    checkLength(username, 3, 15);
+    checkLength(password, 6, 25);
 });
